@@ -1,0 +1,7 @@
+thead > tr > th, tbody > tr > td   {
+    width: 30%;
+}
+
+form {
+    margin-bottom: 20px;
+}
