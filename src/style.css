@@ -1,7 +1,15 @@
+#root {
+    padding: 5px;
+}
+
 thead > tr > th, tbody > tr > td   {
-    width: 30%;
+    width: 33%;
 }
 
 form {
     margin-bottom: 20px;
+}
+
+.table {
+    margin: 5px 0;
 }
