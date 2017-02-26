@@ -9,46 +9,43 @@ class App extends Component {
             companies: [ ]
         }
     }
-    searchCompanies(date) {
-        //Validate kesken
-        if(date.length !== 10) {
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth()+1;
-            var yyyy = today.getFullYear();
-            if(dd<10){
-                dd='0'+dd;
-            } 
-            if(mm<10){
-                mm='0'+mm;
-            } 
-            date = dd+'.'+mm+'.'+yyyy;
+    //Annetun päiväformaatin tarkastus
+    validateDate(date) {
+        var re = /^[0-3]?[0-9]\.[01]?[0-9]\.[12][90][0-9][0-9]$/
+        if(date !== '' && !date.match(re)) {
+            alert("Invalid date format: " + date);
+            return false;
         }
-        var parts = date.split('.');
-        var day = parseInt(parts[0], 10)-1;
-        if(day.toString().length === 1) { day = "0"+day.toString(); }
-        var startDate = parts[2]+"-"+parts[1]+"-"+day;
-        var endDate = parts[2]+"-"+parts[1]+"-"+parts[0]; 
-        console.log(startDate + " " + endDate);
-        fetch('http://avoindata.prh.fi/bis/v1?maxResults=1000&resultsFrom=0&companyRegistrationFrom='+startDate+'&companyRegistrationTo='+endDate) 
-        .then(result=> {
-            return result.json();
-        })
-        .then((parsedData) => {
-              this.setState({companies:  parsedData.results });
-        });
+        return true;
     }
-    componentWillMount() {
+    //Haetaan annetun päivän data
+    searchCompanies(date) {
+        if(this.validateDate(date)) {
+            //Muunnetaan 'date'-muuttuja urlin mukaiseen formaattiin
+            var parts = date.split('.');
+            var day = parseInt(parts[0], 10)-1;
+            if(day.toString().length === 1) { day = "0"+day.toString(); }
+            var startDate = parts[2]+"-"+parts[1]+"-"+day;
+            var endDate = parts[2]+"-"+parts[1]+"-"+parts[0]; 
+            console.log(startDate + " " + endDate);
+            fetch('http://avoindata.prh.fi/bis/v1?maxResults=1000&resultsFrom=0&companyRegistrationFrom='+startDate+'&companyRegistrationTo='+endDate) 
+            .then(result=> {
+                return result.json();
+            })
+            .then((parsedData) => {
+                //Sijoitetaan haettu data muuttujaan
+                this.setState({companies:  parsedData.results });
+            });
+        }
+        else {
+            
+        }
+    }
+    //Haetaan data sivun latauksen jälkeen
+    componentDidMount() {
         this.searchCompanies('');
-        //fetch('http://avoindata.prh.fi/bis/v1?maxResults=1000&resultsFrom=0&companyRegistrationFrom=2016-02-22&companyRegistrationTo=2016-02-23') 
-        //    .then(result=> {
-        //        return result.json();
-        //    })
-        //    .then((parsedData) => {
-        //          this.setState({companies:  parsedData.results });
-        //    });
     }
-    
+    //Hakukentän käsittely
     handleSearch(date){
         this.searchCompanies(date);
     }
@@ -56,7 +53,6 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-
             <Search searchDate={this.handleSearch.bind(this)}/>
             <Companies companies={this.state.companies}/>
             </div>

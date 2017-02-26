@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 
 class Search extends Component {
-
+    //Käsitellään haku
     handleSubmit(e){
-        if(this.refs.title.value === '') {
-            alert('Title is required');
+        //Jos 'date' on tyhjä
+        if(this.refs.searchInput.value === '') {
+            alert('Date not given.');
         } else {
-            console.log(this.props);
-            this.props.searchDate(this.refs.title.value);
+            //Jos 'date' ei ole tyhjä, kutsutaan App.js:ssä määriteltyä propertyä 'searchDate'
+            this.props.searchDate(this.refs.searchInput.value);
         }
         e.preventDefault();
     }
@@ -17,7 +18,7 @@ class Search extends Component {
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <div>
                         <label>Search by date (dd.mm.yyyy):</label><br />
-                        <input type="text" ref="title" />
+                        <input className="datefield" type="text" ref="searchInput" />
                         <input type="submit" value="Search" />
                     </div>
                 </form>

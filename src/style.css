@@ -1,9 +1,12 @@
 #root {
     padding: 5px;
 }
+thead > tr > th:first-child, tbody > tr > td:first-child  {
+    width: 20%;
+}
 
 thead > tr > th, tbody > tr > td   {
-    width: 33%;
+    width: 40%;
 }
 
 form {
