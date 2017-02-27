@@ -12,8 +12,10 @@ class App extends Component {
     //Annetun päiväformaatin tarkastus
     validateDate(date) {
         var re = /^[0-3]?[0-9]\.[01]?[0-9]\.[12][90][0-9][0-9]$/
-        if(date !== '' && !date.match(re)) {
-            alert("Invalid date format: " + date);
+        if(!date.match(re)) {
+            if(date !== '-'){
+                alert("Invalid date format: " + date);
+            }
             return false;
         }
         return true;
@@ -38,12 +40,36 @@ class App extends Component {
             });
         }
         else {
+            //Viimeisin
+            var dateStart = new Date(),
+                month = '' + (dateStart.getMonth() + 1),
+                days = '' + (dateStart.getDate()-1),
+                year = dateStart.getFullYear();
+            var dateEnd = new Date(),
+                monthEnd = '' + (dateEnd.getMonth() + 1),
+                dayEnd = '' + dateEnd.getDate(),
+                yearEnd = dateEnd.getFullYear();
             
+            if (month.length < 2) month = '0' + month;
+            if (days.length < 2) days = '0' + days;
+            if (monthEnd.length < 2) monthEnd = '0' + monthEnd;
+            if (dayEnd.length < 2) dayEnd = '0' + dayEnd;
+            var startDateNew = [year, month, days].join('-');
+            var endDateNew = [yearEnd, monthEnd, dayEnd].join('-');
+            console.log(startDateNew + " " + endDateNew);
+            fetch('https://avoindata.prh.fi/bis/v1?maxResults=1000&resultsFrom=0&companyRegistrationFrom='+startDateNew+'&companyRegistrationTo='+endDateNew) 
+            .then(result=> {
+                return result.json();
+            })
+            .then((parsedData) => {
+                //Sijoitetaan haettu data muuttujaan
+                this.setState({companies:  parsedData.results });
+            });
         }
     }
     //Haetaan data sivun latauksen jälkeen
     componentDidMount() {
-        this.searchCompanies('');
+        this.searchCompanies('-');
     }
     //Hakukentän käsittely
     handleSearch(date){
