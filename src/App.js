@@ -11,7 +11,7 @@ class App extends Component {
     }
     //Annetun päiväformaatin tarkastus
     validateDate(date) {
-        var re = /^[0-3]?[0-9]\.[01]?[0-9]\.[12][90][0-9][0-9]$/
+        var re = /^[0-3][0-9]\.[01][0-9]\.[12][90][0-9][0-9]$/
         if(!date.match(re)) {
             if(date !== '-'){
                 alert("Invalid date format: " + date);
